@@ -27,6 +27,7 @@ else
 	S="${WORKDIR}/${MY_PN}-${PV}"
 
 	KEYWORDS="amd64 ~arm64 ~x86"
+	RESTRICT="mirror"
 fi
 
 # GPL-3 for PolyMC, Prism (FjordLauncher is forked from it), and Fjord itself

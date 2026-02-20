@@ -96,7 +96,7 @@ src_prepare() {
 		elog
 		elog "If you experience any problems, install an older Java compiler"
 		elog "and select it with \"eselect java-vm\", then recompile."
-		eapply "${FILESDIR}/openjdk21.patch"
+		eapply "${FILESDIR}/fjordlauncher-9.1.0-openjdk21.patch"
 	fi
 }
 

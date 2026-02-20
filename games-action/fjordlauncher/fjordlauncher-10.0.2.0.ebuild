@@ -12,14 +12,9 @@ HOMEPAGE="https://github.com/unmojang/FjordLauncher"
 if [[ ${PV} == *9999* ]]; then
 	inherit git-r3
 
-	EGIT_REPO_URI="
-		https://github.com/unmojang/FjordLauncher
-	"
+	EGIT_REPO_URI="https://github.com/unmojang/FjordLauncher"
 
-	EGIT_SUBMODULES=(
-		'*' '-libraries/cmark' '-libraries/extra-cmake-modules' '-libraries/filesystem' '-libraries/quazip'
-		'-libraries/tomlplusplus' '-libraries/zlib'
-	)
+	EGIT_SUBMODULES=( 'libraries/libnbtplusplus' )
 else
 	MY_PN="FjordLauncher"
 
@@ -48,24 +43,21 @@ RESTRICT="!test? ( test )"
 
 # Required at both build time and runtime
 COMMON_DEPEND="
+	app-arch/libarchive:=
 	app-text/cmark:=
 	dev-cpp/tomlplusplus
-	>=dev-libs/quazip-1.3-r2:=[qt6(-)]
-	>=dev-qt/qtbase-${QTMIN}:6[concurrent,gui,network,widgets,xml(+)]
-	>=dev-qt/qt5compat-${QTMIN}:6
+	>=dev-qt/qtbase-${QTMIN}:6[concurrent,gui,network,opengl,widgets,xml(+)]
 	>=dev-qt/qtnetworkauth-${QTMIN}:6
 	games-util/gamemode
-	virtual/zlib
+	media-gfx/qrencode:=
+	virtual/zlib:=
 "
 
-# The gulrak-filesystem dependency is only needed at build time, because we don't actually use it on Linux,
-# only on legacy macOS. Still, we need it present at build time to appease CMake, and having it like this
-# makes it easier to maintain than patching the CMakeLists file directly.
+# max jdk-25 for bug #968411
 DEPEND="
 	${COMMON_DEPEND}
-	dev-cpp/gulrak-filesystem
 	media-libs/libglvnd
-	>=virtual/jdk-1.8.0:*
+	<virtual/jdk-26:*
 "
 
 # QtSvg imageplugin needed at runtime for svg icons. Its used via QIcon.
@@ -97,7 +89,7 @@ src_prepare() {
 		elog
 		elog "If you experience any problems, install an older Java compiler"
 		elog "and select it with \"eselect java-vm\", then recompile."
-		eapply "${FILESDIR}/openjdk21.patch"
+		eapply "${FILESDIR}/fjordlauncher-9.1.0-openjdk21.patch"
 	fi
 }
 
@@ -127,5 +119,4 @@ pkg_postinst() {
 	optfeature "old Minecraft (<= 1.12.2) support" x11-apps/xrandr
 
 	optfeature "built-in MangoHud support" games-util/mangohud
-	optfeature "built-in Feral Gamemode support" games-util/gamemode
 }
